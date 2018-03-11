@@ -1,6 +1,10 @@
 #ifndef KALMAN_FILTER_H_
 #define KALMAN_FILTER_H_
 #include "Eigen/Dense"
+#include "tools.h"
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 
 class KalmanFilter {
 public:
@@ -18,11 +22,11 @@ public:
   Eigen::MatrixXd Q_;
 
   // measurement matrix
-  Eigen::MatrixXd H_;
-
+  Eigen::MatrixXd H_laser_;
+  Eigen::MatrixXd H_radar_;
   // measurement covariance matrix
-  Eigen::MatrixXd R_;
-
+  Eigen::MatrixXd R_laser_;
+  Eigen::MatrixXd R_radar_;
   /**
    * Constructor
    */
@@ -42,8 +46,9 @@ public:
    * @param R_in Measurement covariance matrix
    * @param Q_in Process covariance matrix
    */
-  void Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
-      Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
+  void Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
+                        MatrixXd &H_laser, MatrixXd &R_laser,
+                        MatrixXd &R_radar, MatrixXd &Q_in);
 
   /**
    * Prediction Predicts the state and the state covariance
@@ -64,6 +69,9 @@ public:
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+private:
+  Tools my_tools;
+  MatrixXd I;
 };
 
 #endif /* KALMAN_FILTER_H_ */

@@ -45,6 +45,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 	MatrixXd S = H_laser_ * P_ * Ht + R_laser_;
 	MatrixXd Si = S.inverse();
 	MatrixXd PHt = P_ * Ht;
+  /* Kalman Gain*/
 	MatrixXd K = PHt * Si;
 
 	//new estimate
@@ -64,16 +65,17 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float vx = x_(2);
   float vy = x_(3);
 
-
+  /* Transform from Cartesian to Polar Coordinate system */
   VectorXd h_x(3);
   h_x(0) = sqrt(px * px + py * py);
   h_x(1) = atan2(py,px);
   h_x(2) = (px*vx+py*vy)/ (h_x(0)+0.0001);
 
+  /* Jacobian matrix to linealized the function*/
   MatrixXd H_radar = this->my_tools.CalculateJacobian(x_);
 
   VectorXd y = z - h_x;
-  
+  /* Ensure that the range is from -PI to PI*/
   if( y[1] > M_PI )
   {
       y[1] -= 2.f*M_PI;
@@ -84,7 +86,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
      y[1] += 2.f*M_PI;
   }
     
-
+  /* Same like the Lidar measurement but using the Jacobian matrix*/
   MatrixXd Ht = H_radar.transpose();
 
 	MatrixXd S = H_radar * P_ * Ht + R_radar_;

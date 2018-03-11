@@ -23,7 +23,6 @@ public:
 
   // measurement matrix
   Eigen::MatrixXd H_laser_;
-  Eigen::MatrixXd H_radar_;
   // measurement covariance matrix
   Eigen::MatrixXd R_laser_;
   Eigen::MatrixXd R_radar_;
